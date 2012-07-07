@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!--<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js"></script>-->
+	<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.1.0.debug.js"></script>
+	<script type="text/javascript" src="lastfm.api.md5.js"></script>
+	<script type="text/javascript" src="lastfm.api.cache.js"></script>
+	<script type="text/javascript" src="lastfm.api.js"></script>
+
+	<link rel="stylesheet" href="bootstrap.min.css"/>
+</head>
+
+<body>
+<div class="container">
+    <h1 class="row">Get similar artists you didn't heard before</h1>
+    <section class="row">
+	    <form data-bind="submit: run" class="well span3">
+	            <label for="username-field">Last.fm username:</label>
+	            <input type="text" id="username-field" data-bind="value: username, disable: isRunning" />
+
+	            <label for="artist-field">Artist:</label>
+	            <input type="text" id="artist-field" data-bind="value: artist, disable: isRunning" />
+	            <div class="form-actions">
+	            	<button id="button-start" class="btn btn-primary" type="submit" data-bind="disable: isRunning"/>Start</button>
+	        	</div>
+	    </form>
+	    <div class="span7">
+		    <h2>Progress</h2>
+		    <code id="console" class="span5" style="height: 150px; overflow: auto;" data-bind="text: consoleText">
+		    </code>
+		</div>
+	</section>
+
+	<p>Artists in your library: <strong data-bind="text: artistsInLibrary"></strong></p>
+
+    <section id="results" class="row span12" data-bind="visible: resultArtists().length > 0">
+	    <h2 class="span12">Results</h2>
+
+	    <p class="row">
+	    	Similar artists returned by last.fm: <strong data-bind="text: similarArtistsReturned"></strong>,
+	    	filtered <strong data-bind="text: similarArtistsReturned()-similarArtistsAfterFilter()"></strong> already in library
+	    </p>
+
+	    <ul class="thumbnails row span12" data-bind="foreach: resultArtists">
+		  <li class="span2" style="height: 250px;">
+		    <a class="thumbnail" target="_blank" data-bind="attr: {href: 'http://' + url}">
+		      <img src="" alt="" data-bind="attr: {src: image[2]['#text']}">
+		      <h4 data-bind="text: name"></h4>
+		      <p>Similarity: <span data-bind="text: parseFloat(match).toFixed(2)"></span></p>
+		    </a>
+		  </li>
+		</ul>
+	</section>
+</div>
+<script type="text/javascript" src="similar.js"></script>
+</body>
+</html>
