@@ -17,6 +17,18 @@ var SimilarViewModel = function() {
     this.isRunning = ko.observable(false)
     this.username = ko.observable(localStorage.user ? localStorage.user : "")
     this.artist = ko.observable("")
+    this.minListens = ko.computed({
+        read: function() {
+            if (localStorage.minListens !== undefined) {
+                return localStorage.minListens
+            } else {
+                return 3
+            }
+        },
+        write: function(value) {
+            localStorage.minListens = value
+        }
+    })
 
     this.consoleText = ko.observable("Ready\n")
     this.artistsInLibrary = ko.observable(0)
@@ -27,12 +39,13 @@ var SimilarViewModel = function() {
     this.run = function() {
         this.isRunning(true)
         this.resultArtists.removeAll()
-        if (localStorage.user != this.username()) {
+        if (!this.isCacheValid()) {
             this.getAllLibraryArtists(this.username(), function(artists) {
                 var artists_ = {__length: 0}
-                artists.forEach(function(a){artists_[a.name]=true; artists_.__length++})
+                artists.forEach(function(a){artists_[a.name]=a.playcount; artists_.__length++})
                 localStorage.user = this.username()
                 localStorage.artists = JSON.stringify(artists_)
+                localStorage.version = 2
                 this.generateResults(artists_, this.artist())
             })
         } else {
@@ -43,12 +56,22 @@ var SimilarViewModel = function() {
         }
     }
 
+    this.isCacheValid = function() {
+        return ((localStorage.user == this.username()) && localStorage.artists &&
+            localStorage.version == 2)
+    }
+
     this.generateResults = function(library, artist) {
         s = this
         lastfm.artist.getSimilar({artist:artist, autocorrect:1}, {
             success: function(data) {
-                var filtered_artists = data.similarartists.artist.filter(function(a){console.log(a);return !library[a.name]})
-                filtered_artists.forEach(function(a){s.resultArtists.push(a)})
+                var filtered_artists = data.similarartists.artist.filter(function(a){
+                    return library[a.name] === undefined || library[a.name] < s.minListens()
+                })
+                filtered_artists.forEach(function(a){
+                    a.countInLibrary = library[a.name] ? library[a.name] : 0
+                    s.resultArtists.push(a)
+                })
 
                 s.similarArtistsReturned(data.similarartists.artist.length)
                 s.similarArtistsAfterFilter(filtered_artists.length)

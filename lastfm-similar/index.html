@@ -20,6 +20,10 @@
 
 	            <label for="artist-field">Artist:</label>
 	            <input type="text" id="artist-field" data-bind="value: artist, disable: isRunning" />
+
+	            <label for="min-listens-field">Minimum listens in library:</label>
+	            <input type="text" id="min-listens-field" data-bind="value: minListens, disable: isRunning" class="span1" />
+
 	            <div class="form-actions">
 	            	<button id="button-start" class="btn btn-primary" type="submit" data-bind="disable: isRunning"/>Start</button>
 	        	</div>
@@ -31,7 +35,7 @@
 		</div>
 	</section>
 
-	<p>Artists in your library: <strong data-bind="text: artistsInLibrary"></strong></p>
+	<p>Artists in your library: <strong data-bind="text: artistsInLibrary, css: {'badge-inverse': artistsInLibrary}" class="badge"></strong></p>
 
     <section id="results" class="row span12" data-bind="visible: resultArtists().length > 0">
 	    <h2 class="span12">Results</h2>
@@ -47,6 +51,7 @@
 		      <img src="" alt="" data-bind="attr: {src: image[2]['#text']}">
 		      <h4 data-bind="text: name"></h4>
 		      <p>Similarity: <span data-bind="text: parseFloat(match).toFixed(2)"></span></p>
+		      <p data-bind="if: countInLibrary">Play count in your library: <span class="badge badge-warning" data-bind="text: countInLibrary"></span></p>
 		    </a>
 		  </li>
 		</ul>
