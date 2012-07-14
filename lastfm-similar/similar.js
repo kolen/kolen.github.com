@@ -28,7 +28,22 @@ var SimilarViewModel = function() {
         return this.similarArtistsReturned()-this.similarArtistsAfterFilter()
     }, this)
 
+    this.progress = {
+        requestsToDo: ko.observable(1),
+        requestsDone: ko.observable(0),
+    }
+    this.progress.percent = ko.computed(function() {
+        var frac_requests = this.progress.requestsDone() / this.progress.requestsToDo()
+        var perc = 0.1 + 0.9 * frac_requests
+        return Math.round(perc * 100) + "%"
+    }, this)
+    this.progress.visible = ko.computed(function() {
+        return this.isRunning()
+    }, this).extend({ throttle: 300 })
+
     this.run = function() {
+        this.progress.requestsToDo(1)
+        this.progress.requestsDone(0)
         this.isRunning(true)
         this.resultArtists.removeAll()
         if (!this.isCacheValid()) {
@@ -69,6 +84,7 @@ var SimilarViewModel = function() {
                 s.similarArtistsAfterFilter(filtered_artists.length)
 
                 s.isRunning(false)
+                s.progress.requestsDone(s.progress.requestsDone()+1)
             },
             error: function(error, message) {
                 s.console("Error: "+message)
@@ -103,10 +119,12 @@ var SimilarViewModel = function() {
                         s.artistsInLibrary(data.artists['@attr'].total)
                         if (total_pages === null) {
                             total_pages = data.artists['@attr'].totalPages
+                            s.progress.requestsToDo(total_pages) // -1 already done +1 request for artists
                         }
 
                         artists = artists.concat(new_artists)
                     }
+                    s.progress.requestsDone(current_page)
 
                     if (current_page < total_pages) {
                         current_page++

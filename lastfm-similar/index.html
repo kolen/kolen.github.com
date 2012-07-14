@@ -33,6 +33,9 @@
 		    <code id="console" class="span5" style="height: 150px; overflow: auto;" data-bind="text: consoleText">
 		    </code>
 		</div>
+		<div class="progress progress-striped row span6" style="margin-top: 30px;" data-bind="visible: progress.visible">
+		  <div class="bar" style="width: 20%;" data-bind="style: {width: progress.percent}"></div>
+		</div>
 	</section>
 
 	<p>Artists in your library: <strong data-bind="text: artistsInLibrary, css: {'badge-inverse': artistsInLibrary}" class="badge"></strong></p>
