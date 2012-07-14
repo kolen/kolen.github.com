@@ -17,18 +17,7 @@ var SimilarViewModel = function() {
     this.isRunning = ko.observable(false)
     this.username = ko.observable(localStorage.user ? localStorage.user : "")
     this.artist = ko.observable("")
-    this.minListens = ko.computed({
-        read: function() {
-            if (localStorage.minListens !== undefined) {
-                return localStorage.minListens
-            } else {
-                return 3
-            }
-        },
-        write: function(value) {
-            localStorage.minListens = value
-        }
-    })
+    this.minListens = ko.observable(3)
 
     this.consoleText = ko.observable("Ready\n")
     this.artistsInLibrary = ko.observable(0)
