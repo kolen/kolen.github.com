@@ -35,6 +35,9 @@ var SimilarViewModel = function() {
     this.resultArtists = ko.observableArray()
     this.similarArtistsReturned = ko.observable(0)
     this.similarArtistsAfterFilter = ko.observable(0)
+    this.artistsFiltered = ko.computed(function(){
+        return this.similarArtistsReturned()-this.similarArtistsAfterFilter()
+    }, this)
 
     this.run = function() {
         this.isRunning(true)

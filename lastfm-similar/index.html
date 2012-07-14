@@ -41,8 +41,8 @@
 	    <h2 class="span12">Results</h2>
 
 	    <p class="row">
-	    	Similar artists returned by last.fm: <strong data-bind="text: similarArtistsReturned"></strong>,
-	    	filtered <strong data-bind="text: similarArtistsReturned()-similarArtistsAfterFilter()"></strong> already in library
+	    	Similar artists returned by last.fm: <strong data-bind="text: similarArtistsReturned, css: {'badge-inverse': similarArtistsReturned}" class="badge"></strong>,
+	    	filtered <strong data-bind="text: artistsFiltered, css: {'badge-inverse': artistsFiltered}" class="badge"></strong> already in library
 	    </p>
 
 	    <ul class="thumbnails row span12" data-bind="foreach: resultArtists">
