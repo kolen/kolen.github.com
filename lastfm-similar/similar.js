@@ -27,7 +27,6 @@ var SimilarViewModel = function() {
     this.run = function() {
         this.isRunning(true)
         this.resultArtists.removeAll()
-        console.log("run")
         if (localStorage.user != this.username()) {
             this.getAllLibraryArtists(this.username(), function(artists) {
                 var artists_ = {__length: 0}
@@ -49,7 +48,6 @@ var SimilarViewModel = function() {
         lastfm.artist.getSimilar({artist:artist, autocorrect:1}, {
             success: function(data) {
                 var filtered_artists = data.similarartists.artist.filter(function(a){console.log(a);return !library[a.name]})
-                console.log(filtered_artists)
                 filtered_artists.forEach(function(a){s.resultArtists.push(a)})
 
                 s.similarArtistsReturned(data.similarartists.artist.length)
@@ -84,10 +82,8 @@ var SimilarViewModel = function() {
             s.console("Getting libary for "+username+", page "+current_page+" / "+(total_pages ? total_pages : "unknown"))
             lastfm.library.getArtists({user: username, page: current_page, limit: page_size}, {
                 success: function(data) {
-                    console.log(data)
                     if (data && data.artists && data.artists.artist) {
                         var new_artists = data.artists.artist
-                        console.log("... got ", new_artists.length)
                     
                         s.artistsInLibrary(data.artists['@attr'].total)
                         if (total_pages === null) {
@@ -114,7 +110,5 @@ var SimilarViewModel = function() {
     }
 }
 
-
-console.log("applyBindings")
 ko.applyBindings(new SimilarViewModel())
 
